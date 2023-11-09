@@ -1,20 +1,22 @@
-import sys
+import sys, datetime, pytz
 
 """
 TODO: Create menu options function for view task list option. 
         -Modify a task name.
         -Modify a task deadline. 
+            -Import datetime.
+            -Use a timedelta to determine time remaining b4 deadline
+                -Subtract current d/t from deadline d/t, returning a timedelta representing remaining time b4 deadline
         -Remove a task from your queue.
 TODO: Implement File I/O.
-        -bin location?
 TODO: Import tkinter library (import tkinter as tk) to create GUI.
         -This will allow more robust features like task descriptions, hover options, etc.
+TODO: Implement aware D/T's using pytz.
 """
 
 
 class Task:
     # TODO Task deadline
-    # Implement date-time feature? maybe too advanced. try it out.
     def __init__(self, task_name):
         self.task_name = task_name
         self.completed = False
@@ -32,16 +34,43 @@ class ToDoList:
         self.tasks.append(new_task)
 
     def display_tasks(self):
-        # TODO Display task deadline
-        print("\nTasks in queue:")
-        print("---------------")
-        for idx, task in enumerate(self.tasks, start=1):
-            status = "Completed" if task.completed else "Incomplete"
-            print(f"{idx}. {task.task_name} - {status}")
-        print("---------------")
+        while True:
+            # TODO Display task deadline
+            print("\nTasks in queue:")
+            print("---------------")
+            for idx, task in enumerate(self.tasks, start=1):
+                status = "Completed" if task.completed else "Incomplete"
+                print(f"{idx}. {task.task_name} - {status}")
+            print("---------------")
 
-    def remove_task(self, task_name):
-        self.tasks.remove(task_name)
+            print("\nMenu Options:")
+            print("1. Modify a task name.")
+            print("2. Remove a task.")
+            print("3. Mark a task as completed.")
+            print("4. Return to main menu.")
+
+            choice = int(input("Enter a number corresponding to a menu option: "))
+
+            if choice == 1:
+                task_number = int(input("Enter the number of the task that you would like to rename: "))
+                new_name = input("Enter the new name for this task: ")
+                self.change_task_name(task_number, new_name)
+            elif choice == 2:
+                task_number = int(input("Enter the number of the task that you would like to remove: "))
+                self.remove_task(task_number)
+            elif choice == 3:
+                task_number = int(input("Enter the number of the task that you would like to mark completed: "))
+                self.tasks[task_number].mark_complete()
+            elif choice == 4:
+                return
+            else:
+                print("Please enter a number corresponding to a menu option.")
+
+    def change_task_name(self, current_number, new_name):
+        self.tasks[current_number - 1] = new_name
+
+    def remove_task(self, task_number):
+        self.tasks.remove(task_number)
 
 
 def show_main_menu(to_do_list):
